@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>eBay Seller Tool - OAuth Callback</title>
+  <style>
+    body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:60px auto;padding:0 20px;color:#20243a}
+    .card{border:1px solid #e6e8f0;border-radius:14px;padding:24px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+    textarea{width:100%;min-height:130px;box-sizing:border-box;padding:12px;border:1px solid #bbb;border-radius:8px;word-break:break-all}
+    button{margin-top:12px;padding:10px 18px;border:0;border-radius:8px;background:#111;color:#fff;cursor:pointer}
+    .ok{color:#15803d;font-weight:700}.err{color:#b91c1c;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>eBay Seller Tool</h1>
+    <p id="status">認証結果を確認しています...</p>
+    <div id="codeArea" hidden>
+      <p>下のAuthorization Codeをコピーして、eBay Seller Toolの「Authorization Code」に貼り付けてください。</p>
+      <textarea id="code" readonly></textarea>
+      <button id="copy">コードをコピー</button>
+    </div>
+  </div>
+  <script>
+    const p = new URLSearchParams(location.search);
+    const code = p.get('code');
+    const error = p.get('error');
+    const status = document.getElementById('status');
+    if (code) {
+      status.textContent = 'eBay認証が完了しました。'; status.className = 'ok';
+      document.getElementById('codeArea').hidden = false;
+      document.getElementById('code').value = code;
+    } else {
+      status.textContent = error ? `認証に失敗しました: ${error}` : 'Authorization Codeが見つかりません。';
+      status.className = 'err';
+    }
+    document.getElementById('copy')?.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(document.getElementById('code').value);
+      document.getElementById('copy').textContent = 'コピーしました';
+    });
+  </script>
+</body>
+</html>
